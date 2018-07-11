@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+mybatis的具体的dao对应的配置文件，类似于那个impl
+
+namespace要和我们的dao的接口进行绑定
+-->
+<mapper namespace="com.sz.mapper.BookMapper">
+    <sql id="sqlBase">
+        `id`,`ISBN`,`name`,`price`,`discount`,`publisher`
+    </sql>
+
+    <!--自己定义结果集-->
+    <resultMap id="baseMap" type="com.sz.entity.Book">
+        <id property="id" column="id"/>
+        <result property="ISBN" column="ISBN"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="discount" column="discount"/>
+        <result property="publisher" column="publisher"/>
+    </resultMap>
+
+    <resultMap id="author" type="com.sz.entity.Author">
+        <id property="id" column="author_id2"/>
+        <result property="name" column="author_name"/>
+        <collection property="listBook" ofType="com.sz.entity.Book">
+            <id property="id" column="book_id2"/>
+            <result property="ISBN" column="ISBN"/>
+            <result property="name" column="book_name"/>
+            <result property="price" column="price"/>
+            <result property="discount" column="discount"/>
+            <result property="publisher" column="publisher"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="books" type="com.sz.entity.Book">
+        <id property="id" column="id"/>
+        <result property="ISBN" column="ISBN"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="discount" column="discount"/>
+        <result property="publisher" column="publisher"/>
+    </resultMap>
+
+    <!--CRUD都提供了标准的标签
+        C:create
+        R:retrieve
+        U:update
+        D:delete
+        增删改查
+    -->
+
+    <!--对于select而言，我们要通知mybatis，你帮我封装成我指定的数据类型
+        list集合（如果你要查询的结果是一个集合，你描述集合当中的元素的是java类型就可以了。）
+        如果你要查询的结果就是一个普通的java对象，resultType直接写对应的pojo就可以了。
+    -->
+
+    <select id="selectTive" resultMap="author">
+        SELECT t2.id author_id2,t2.name author_name,t3.id book_id2,t3.ISBN,t3.name book_name,t3.price,t3.publisher
+        FROM author_book t1 LEFT JOIN author t2 ON t1.author_id=t2.id
+        LEFT JOIN book t3 ON t3.id=t1.book_id
+        WHERE t2.id=#{id}
+
+        <!--SELECT
+        `id`,`ISBN`,`name`,`price`,`discount`,`publisher`-->
+        <!--<include refid="sqlBase"/>-->
+        <!--FROM book-->
+        <!--<where>-->
+            <!--<if test="id !=null">-->
+                <!--and id=#{id}-->
+            <!--</if>-->
+            <!--<if test="ISBN !=null">-->
+                <!--and ISBN=#{ISBN}-->
+            <!--</if>-->
+            <!--<if test="name !=null">-->
+                <!--and name=#{name}-->
+            <!--</if>-->
+            <!--<if test="price !=null">-->
+                <!--and price=#{price}-->
+            <!--</if>-->
+            <!--<if test="discount !=null">-->
+                <!--and discount=#{discount}-->
+            <!--</if>-->
+            <!--<if test="publisher !=null">-->
+                <!--and publisher=#{publisher}-->
+            <!--</if>-->
+        <!--</where>-->
+    </select>
+
+    <select id="selectTive2" resultMap="books">
+        SELECT t2.id author_id2,t2.name author_name,t3.id book_id2,t3.ISBN,t3.name book_name,t3.price,t3.publisher
+        FROM author_book t1 LEFT JOIN author t2 ON t1.author_id=t2.id
+        LEFT JOIN book t3 ON t3.id=t1.book_id
+        WHERE t3.id=#{id}
+    </select>
+
+    <insert id="inserTive" parameterType="com.sz.entity.Book">
+        INSERT INTO `book`(`id`
+        <if test="ISBN !=null">
+            ,`ISBN`
+        </if>
+        <if test="name !=null">
+            ,`name`
+        </if>
+        <if test="price !=null">
+            ,`price`
+        </if>
+        <if test="discount !=null">
+            ,`discount`
+        </if>
+        <if test="publisher !=null">
+            ,`publisher`
+        </if>
+        )
+        VALUES (#{id}
+        <if test="ISBN !=null">
+            ,#{ISBN}
+        </if>
+        <if test="name !=null">
+            ,#{name}
+        </if>
+        <if test="price !=null">
+            ,#{price}
+        </if>
+        <if test="discount !=null">
+            ,#{discount}
+        </if>
+        <if test="publisher !=null">
+            ,#{publisher}
+        </if>
+        )
+    </insert>
+
+    <update id="updateTive">
+        <if test="id !=null">
+            <!--update book-->
+            <!--<set>-->
+                <!--<if test="ISBN !=null">-->
+                    <!--ISBN =#{ISBN},-->
+                <!--</if>-->
+                <!--<if test="name !=null">-->
+                    <!--name =#{name},-->
+                <!--</if>-->
+                <!--<if test="price !=null">-->
+                    <!--price =#{price},-->
+                <!--</if>-->
+                <!--<if test="discount !=null">-->
+                    <!--discount =#{discount},-->
+                <!--</if>-->
+                <!--<if test="publisher !=null">-->
+                    <!--publisher =#{publisher},-->
+                <!--</if>-->
+            <!--</set>-->
+            <!--<where>-->
+                <!--and id=#{id}-->
+            <!--</where>-->
+
+            <!--两种写法-->
+            update book
+            <trim prefix="set" suffixOverrides=",">
+            <if test="ISBN !=null">
+            ISBN =#{ISBN},
+            </if>
+            <if test="name !=null">
+            name =#{name},
+            </if>
+            <if test="price !=null">
+            price =#{price},
+            </if>
+            <if test="discount !=null">
+            discount =#{discount},
+            </if>
+            <if test="publisher !=null">
+            publisher =#{publisher},
+            </if>
+            </trim>
+            <trim prefix="where" prefixOverrides="and">
+            and id=#{id}
+            </trim>
+        </if>
+    </update>
+
+    <delete id="deleteTive">
+        delete from book
+        <where>
+            and id=#{id}
+        </where>
+    </delete>
+
+    <select id="selectById" resultMap="baseMap">
+        SELECT
+        <choose>
+            <when test="price == 0">
+                `id`,`ISBN`,`name`,`price`,`discount`,`publisher`
+            </when>
+            <otherwise>
+                `id`,`ISBN`,`name`
+            </otherwise>
+        </choose>
+        FROM book
+    </select>
+
+    <select id="selectList" resultMap="baseMap">
+        select * from book where id in
+        <foreach  item="bookList" collection="list" open="(" separator="," close=")">
+            #{bookList}
+        </foreach>
+    </select>
+
+</mapper>
