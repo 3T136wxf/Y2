@@ -1,5 +1,6 @@
 package com.sz;
 
+import com.sz.entity.Author;
 import com.sz.entity.Book;
 
 import com.sz.mapper.BookMapper;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class test {
 
@@ -44,19 +46,67 @@ public class test {
         }
     }
 
+    //    1 to N 查询
     @Test
     public void select() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookMapper mapper = sqlSession.getMapper(BookMapper.class);
-        List<Book> books = mapper.selectTive(1);
+        Author books = mapper.selectTive(1);
         System.out.println(books);
         if (sqlSession != null) {
             sqlSession.close();
         }
     }
 
+    //    N to 1 查询
     @Test
-    public void selectList() {
+    public void select2() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+        List<Book> books = mapper.selectTive2(3);
+        System.out.println(books);
+        if (sqlSession != null) {
+            sqlSession.close();
+        }
+    }
+
+    //    1 to N
+    //    测试二级缓存
+    @Test
+    public void selectCache() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+        Author books = mapper.selectTive(1);
+        System.out.println(books);
+        sqlSession.close();
+
+        SqlSession sqlSession1 = MybatisUtil.getSession();
+        BookMapper mapper1 = sqlSession1.getMapper(BookMapper.class);
+        mapper1.selectTive(1);
+        sqlSession1.close();
+
+    }
+
+    // 1 to n 删除
+    @Test
+    public void deleteAll() {
+        SqlSession sqlSession = MybatisUtil.getSession();
+        BookMapper mapper = sqlSession.getMapper(BookMapper.class);
+        try {
+            int row = mapper.deleteAll(2);
+            System.out.println("影响行数：" + row);
+            sqlSession.commit();
+        } catch (Exception e) {
+            sqlSession.rollback();
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
+
+    @Test
+    public void selectListBook() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookMapper mapper = sqlSession.getMapper(BookMapper.class);
         List<Integer> bookList =new ArrayList<>();
@@ -70,7 +120,7 @@ public class test {
     }
 
     @Test
-    public void selectById() {
+    public void selectBook() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookMapper mapper = sqlSession.getMapper(BookMapper.class);
         List<Book> books = mapper.selectById();
@@ -81,16 +131,16 @@ public class test {
     }
 
     @Test
-    public void insert() {
+    public void insertBook() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookMapper mapper = sqlSession.getMapper(BookMapper.class);
         Book books = new Book();
         try {
             books.setISBN("123-594-757-8");
             books.setName("一万0二夜");
-//            books.setPrice(20);
-//            books.setDiscount(6);
-//            books.setPublisher("深圳福田大学出版");
+            books.setPrice(20);
+            books.setDiscount(6);
+            books.setPublisher("深圳福田大学出版");
             mapper.inserTive(books);
             sqlSession.commit();
         } catch (Exception e) {
@@ -103,7 +153,7 @@ public class test {
     }
 
     @Test
-    public void update() {
+    public void updateBook() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookMapper mapper = sqlSession.getMapper(BookMapper.class);
         Book books = new Book();
@@ -127,7 +177,7 @@ public class test {
     }
 
     @Test
-    public void delete() {
+    public void deleteBook() {
         SqlSession sqlSession = MybatisUtil.getSession();
         BookMapper mapper = sqlSession.getMapper(BookMapper.class);
         try {
@@ -142,4 +192,5 @@ public class test {
             }
         }
     }
+
 }

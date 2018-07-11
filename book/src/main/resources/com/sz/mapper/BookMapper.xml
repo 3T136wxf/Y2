@@ -8,34 +8,18 @@ mybatis的具体的dao对应的配置文件，类似于那个impl
 namespace要和我们的dao的接口进行绑定
 -->
 <mapper namespace="com.sz.mapper.BookMapper">
+
+    <cache eviction="FIFO"
+           flushInterval="60000"
+           size="512"
+           readOnly="true"/>
+
     <sql id="sqlBase">
         `id`,`ISBN`,`name`,`price`,`discount`,`publisher`
     </sql>
 
     <!--自己定义结果集-->
     <resultMap id="baseMap" type="com.sz.entity.Book">
-        <id property="id" column="id"/>
-        <result property="ISBN" column="ISBN"/>
-        <result property="name" column="name"/>
-        <result property="price" column="price"/>
-        <result property="discount" column="discount"/>
-        <result property="publisher" column="publisher"/>
-    </resultMap>
-
-    <resultMap id="author" type="com.sz.entity.Author">
-        <id property="id" column="author_id2"/>
-        <result property="name" column="author_name"/>
-        <collection property="listBook" ofType="com.sz.entity.Book">
-            <id property="id" column="book_id2"/>
-            <result property="ISBN" column="ISBN"/>
-            <result property="name" column="book_name"/>
-            <result property="price" column="price"/>
-            <result property="discount" column="discount"/>
-            <result property="publisher" column="publisher"/>
-        </collection>
-    </resultMap>
-
-    <resultMap id="books" type="com.sz.entity.Book">
         <id property="id" column="id"/>
         <result property="ISBN" column="ISBN"/>
         <result property="name" column="name"/>
@@ -57,14 +41,28 @@ namespace要和我们的dao的接口进行绑定
         如果你要查询的结果就是一个普通的java对象，resultType直接写对应的pojo就可以了。
     -->
 
+    <!--1 TO N -->
+    <resultMap id="author" type="com.sz.entity.Author">
+        <id property="id" column="author_id2"/>
+        <result property="name" column="author_name"/>
+        <collection property="listBook" ofType="com.sz.entity.Book">
+            <id property="id" column="book_id2"/>
+            <result property="ISBN" column="ISBN"/>
+            <result property="name" column="book_name"/>
+            <result property="price" column="price"/>
+            <result property="discount" column="discount"/>
+            <result property="publisher" column="publisher"/>
+        </collection>
+    </resultMap>
+    <!--1 TO N -->
     <select id="selectTive" resultMap="author">
-        SELECT t2.id author_id2,t2.name author_name,t3.id book_id2,t3.ISBN,t3.name book_name,t3.price,t3.publisher
+        SELECT t2.id author_id2,t2.name author_name,t3.id book_id2,t3.ISBN,t3.name
+        book_name,t3.price,t3.discount,t3.publisher
         FROM author_book t1 LEFT JOIN author t2 ON t1.author_id=t2.id
         LEFT JOIN book t3 ON t3.id=t1.book_id
         WHERE t2.id=#{id}
 
-        <!--SELECT
-        `id`,`ISBN`,`name`,`price`,`discount`,`publisher`-->
+        <!--SELECT `id`,`ISBN`,`name`,`price`,`discount`,`publisher`-->
         <!--<include refid="sqlBase"/>-->
         <!--FROM book-->
         <!--<where>-->
@@ -88,13 +86,31 @@ namespace要和我们的dao的接口进行绑定
             <!--</if>-->
         <!--</where>-->
     </select>
-
+    <!--N TO 1-->
+    <resultMap id="books" type="com.sz.entity.Author">
+        <id property="id" column="author_id2"/>
+        <result property="name" column="author_name"/>
+        <association property="book" javaType="com.sz.entity.Book">
+            <id property="id" column="book_id2"/>
+            <result property="ISBN" column="ISBN"/>
+            <result property="name" column="book_name"/>
+            <result property="price" column="price"/>
+            <result property="discount" column="discount"/>
+            <result property="publisher" column="publisher"/>
+        </association>
+    </resultMap>
+    <!--N TO 1-->
     <select id="selectTive2" resultMap="books">
-        SELECT t2.id author_id2,t2.name author_name,t3.id book_id2,t3.ISBN,t3.name book_name,t3.price,t3.publisher
+        SELECT t2.id author_id2,t2.name author_name,t3.id book_id2,t3.ISBN,t3.name book_name,t3.price,t3.discount,t3.publisher
         FROM author_book t1 LEFT JOIN author t2 ON t1.author_id=t2.id
         LEFT JOIN book t3 ON t3.id=t1.book_id
         WHERE t3.id=#{id}
     </select>
+    <!--1 to n 删除-->
+    <delete id="deleteAll">
+        DELETE t1.*,t2.*,t3.* FROM author t1,author_book t2,book t3
+        WHERE t1.id = t2.author_id AND t3.id = t2.book_id AND t1.id=#{id}
+    </delete>
 
     <insert id="inserTive" parameterType="com.sz.entity.Book">
         INSERT INTO `book`(`id`
