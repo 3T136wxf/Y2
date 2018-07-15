@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+mybatis的具体的dao对应的配置文件，类似于那个impl
+
+namespace要和我们的dao的接口进行绑定
+-->
+<mapper namespace="cn.smbms.dao.provider.ProviderMapper">
+
+    <sql id="smbms_provider">
+        proCode,proName,proDesc,proContact,proPhone,proAddress,proFax,createdBy,creationDate
+    </sql>
+
+    <resultMap id="getProviderListMap" type="cn.smbms.pojo.Provider">
+        <id property="id" column="id"/>
+        <result property="proCode" column="proCode"/>
+        <result property="proName" column="proName"/>
+        <result property="proDesc" column="proDesc"/>
+        <result property="proContact" column="proContact"/>
+        <result property="proPhone" column="proPhone"/>
+        <result property="proAddress" column="proAddress"/>
+        <result property="proFax" column="proFax"/>
+        <result property="creationDate" column="creationDate"/>
+    </resultMap>
+
+    <cache eviction="FIFO"
+           flushInterval="60000"
+           size="512"
+           readOnly="true"/>
+
+    <insert id="add">
+        insert into smbms_provider
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="provider.proCode !=null">
+                proCode,
+            </if>
+            <if test="provider.proName !=null">
+                proName,
+            </if>
+            <if test="provider.proDesc !=null">
+                proDesc,
+            </if>
+            <if test="provider.proContact !=null">
+                proContact,
+            </if>
+            <if test="provider.proPhone !=null">
+                proPhone,
+            </if>
+            <if test="provider.proAddress !=null">
+                proAddress,
+            </if>
+            <if test="provider.proFax !=null">
+                proFax,
+            </if>
+            <if test="provider.createdBy !=null">
+                createdBy,
+            </if>
+            <if test="provider.creationDate !=null">
+                creationDate,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="provider.proCode !=null">
+                proCode=#{provider.proCode},
+            </if>
+            <if test="provider.proName !=null">
+                proName=#{provider.proName},
+            </if>
+            <if test="provider.proDesc !=null">
+                proDesc=#{provider.proDesc},
+            </if>
+            <if test="provider.proContact !=null">
+                proContact=#{provider.proContact},
+            </if>
+            <if test="provider.proPhone !=null">
+                proPhone=#{provider.proPhone},
+            </if>
+            <if test="provider.proAddress !=null">
+                proAddress=#{provider.proAddress},
+            </if>
+            <if test="provider.proFax !=null">
+                proFax=#{provider.proFax},
+            </if>
+            <if test="provider.createdBy !=null">
+                createdBy=#{provider.createdBy},
+            </if>
+            <if test="provider.creationDate !=null">
+                creationDate=#{provider.creationDate},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getProviderList" resultMap="getProviderListMap">
+        select * from smbms_provider
+        <where>
+            <if test="proName !=null and proName !=''">
+                and proName like #{proName}
+            </if>
+            <if test="proCode !=null and proCode !=''">
+                and proCode like #{proCode}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteProviderById">
+        delete from smbms_provider
+        <where>
+           and id=#{delId}
+        </where>
+    </delete>
+
+    <resultMap id="getProviderByIdMap" type="cn.smbms.pojo.Provider">
+        <id property="id" column="id"/>
+        <result property="proCode" column="proCode"/>
+        <result property="proName" column="proName"/>
+        <result property="proDesc" column="proDesc"/>
+        <result property="proContact" column="proContact"/>
+        <result property="proPhone" column="proPhone"/>
+        <result property="proAddress" column="proAddress"/>
+        <result property="proFax" column="proFax"/>
+        <result property="createdBy" column="createdBy"/>
+        <result property="creationDate" column="creationDate"/>
+        <result property="modifyBy" column="modifyBy"/>
+        <result property="modifyDate" column="modifyDate"/>
+    </resultMap>
+
+    <select id="getProviderById" resultMap="getProviderByIdMap">
+        select * from smbms_provider
+        <where>
+            and id=#{id}
+        </where>
+    </select>
+
+    <update id="modify">
+        update smbms_provider
+        <set>
+            <if test="provider.proCode !=null">
+                proCode=#{provider.proCode},
+            </if>
+            <if test="provider.proName !=null">
+                proName=#{provider.proName},
+            </if>
+            <if test="provider.proDesc !=null">
+                proDesc=#{provider.proDesc},
+            </if>
+            <if test="provider.proContact !=null">
+                proContact=#{provider.proContact},
+            </if>
+            <if test="provider.proPhone !=null">
+                proPhone=#{provider.proPhone},
+            </if>
+            <if test="provider.proAddress !=null">
+                proAddress=#{provider.proAddress},
+            </if>
+            <if test="provider.proFax !=null">
+                proFax=#{provider.proFax},
+            </if>
+            <if test="provider.createdBy !=null">
+                createdBy=#{provider.createdBy},
+            </if>
+            <if test="provider.creationDate !=null">
+                creationDate=#{provider.creationDate},
+            </if>
+        </set>
+        <where>
+            <if test="provider.id !=null">
+                and id = #{provider.id}
+            </if>
+        </where>
+    </update>
+
+</mapper>

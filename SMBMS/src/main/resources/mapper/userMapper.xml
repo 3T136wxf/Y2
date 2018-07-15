@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+mybatis的具体的dao对应的配置文件，类似于那个impl
+
+namespace要和我们的dao的接口进行绑定
+-->
+<mapper namespace="cn.smbms.dao.user.UserMapper">
+
+    <sql id="smbms_userAll">
+        userCode,userName,userPassword,userRole,gender,birthday,phone,address,creationDate,createdBy
+    </sql>
+
+    <resultMap id="getLoginUserMap" type="cn.smbms.pojo.User">
+        <id property="id" column="id"/>
+        <result property="userCode" column="userCode"/>
+        <result property="userName" column="userName"/>
+        <result property="userPassword" column="userPassword"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="phone" column="phone"/>
+        <result property="address" column="address"/>
+        <result property="userRole" column="userRole"/>
+        <result property="createdBy" column="createdBy"/>
+        <result property="creationDate" column="creationDate"/>
+        <result property="modifyBy" column="modifyBy"/>
+        <result property="modifyDate" column="modifyDate"/>
+    </resultMap>
+
+    <cache eviction="FIFO"
+           flushInterval="60000"
+           size="512"
+           readOnly="true"/>
+
+    <insert id="add">
+        insert into smbms_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="user.userCode !=null">
+                userCode,
+            </if>
+            <if test="user.userName !=null">
+                userName,
+            </if>
+            <if test="user.userPassword !=null">
+                userPassword,
+            </if>
+            <if test="user.userRole !=null">
+                userRole,
+            </if>
+            <if test="user.gender !=null">
+                gender,
+            </if>
+            <if test="user.birthday !=null">
+                birthday,
+            </if>
+            <if test="user.phone !=null">
+                phone,
+            </if>
+            <if test="user.address !=null">
+                address,
+            </if>
+            <if test="user.creationDate !=null">
+                creationDate,
+            </if>
+            <if test="user.createdBy !=null">
+                createdBy,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="user.userCode !=null">
+                #{user.userCode},
+            </if>
+            <if test="user.userName !=null">
+                #{user.userName},
+            </if>
+            <if test="user.userPassword !=null">
+                #{user.userPassword},
+            </if>
+            <if test="user.userRole !=null">
+                #{user.userRole},
+            </if>
+            <if test="user.gender !=null">
+                #{user.gender},
+            </if>
+            <if test="user.birthday !=null">
+                #{user.birthday},
+            </if>
+            <if test="user.phone !=null">
+                #{user.phone},
+            </if>
+            <if test="user.address !=null">
+                #{user.address},
+            </if>
+            <if test="user.creationDate !=null">
+                #{user.creationDate},
+            </if>
+            <if test="user.createdBy !=null">
+                #{user.createdBy},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getLoginUsers" resultMap="getLoginUserMap">
+        select id,userCode,userName,userPassword from smbms_user
+        where userCode=#{userCode} and userPassword=#{userPassword}
+    </select>
+
+    <select id="getUserList" resultMap="getLoginUserMap">
+        select u.*,r.roleName as userRoleName from smbms_user u,smbms_role r
+        <where>
+                and u.userRole = r.id
+            <if test="userName !=null and userName!=''">
+                and u.userName like concat('%',#{userName},'%')
+            </if>
+            <if test="userRole !=null and  userRole !=''">
+                and u.userRole like concat('%',#{userRole},'%')
+            </if>
+        </where>
+            ORDER BY creationDate DESC limit #{currentPageNo},#{pageSize}
+    </select>
+
+    <delete id="deleteUserById">
+        delete from smbms_user where id=#{delId}
+    </delete>
+
+    <resultMap id="getUserByIdMap" type="cn.smbms.pojo.User">
+        <id property="id" column="id"/>
+        <result property="userCode" column="userCode"/>
+        <result property="userName" column="userName"/>
+        <result property="userPassword" column="userPassword"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="phone" column="phone"/>
+        <result property="address" column="address"/>
+        <result property="userRole" column="userRole"/>
+        <result property="createdBy" column="createdBy"/>
+        <result property="creationDate" column="creationDate"/>
+        <result property="modifyBy" column="modifyBy"/>
+        <result property="modifyDate" column="modifyDate"/>
+        <result property="userRoleName" column="userRoleName"/>
+    </resultMap>
+
+    <select id="getUserById" resultMap="getUserByIdMap">
+        select u.*,r.roleName as userRoleName from smbms_user u,smbms_role r
+        <where>
+            and u.id=#{id}
+            and u.userRole = r.id
+        </where>
+
+    </select>
+
+    <update id="modify">
+        update smbms_user
+        <set>
+            <if test="user.userCode !=null">
+                userCode=#{user.userCode},
+            </if>
+            <if test="user.userName !=null">
+                userName=#{user.userName},
+            </if>
+            <if test="user.userPassword !=null">
+                userPassword=#{user.userPassword},
+            </if>
+            <if test="user.userRole !=null">
+                userRole=#{user.userRole},
+            </if>
+            <if test="user.gender !=null">
+                gender=#{user.gender},
+            </if>
+            <if test="user.birthday !=null">
+                birthday=#{user.birthday},
+            </if>
+            <if test="user.phone !=null">
+                phone=#{user.phone},
+            </if>
+            <if test="user.address !=null">
+                address=#{user.address},
+            </if>
+            <if test="user.creationDate !=null">
+                creationDate=#{user.creationDate},
+            </if>
+            <if test="user.createdBy !=null">
+                createdBy=#{user.createdBy},
+            </if>
+        </set>
+        <where>
+            <if test="user.id !=null and  user.id !=''">
+                and id = #{user.id}
+            </if>
+        </where>
+    </update>
+
+    <update id="updatePwd">
+        update smbms_user
+        <set>
+            userPassword= #{pwd},
+        </set>
+        <where>
+            and id = #{id}
+        </where>
+    </update>
+
+    <select id="getUserCount" resultType="int">
+        select count(1) as count from smbms_user u,smbms_role r
+        <where>
+            and u.userRole = r.id
+            <if test="userName !=null and userName!=''">
+                and u.userName like #{userName}
+            </if>
+            <if test="userRole >0 and userRole!=''">
+                and u.userRole like #{userRole}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+mybatis的具体的dao对应的配置文件，类似于那个impl
+
+namespace要和我们的dao的接口进行绑定
+-->
+<mapper namespace="cn.smbms.dao.role.RoleMapper">
+
+    <resultMap id="getRoleListMap" type="cn.smbms.pojo.Role">
+        <id property="id" column="id"/>
+        <result property="roleCode" column="roleCode"/>
+        <result property="roleName" column="roleCode"/>
+    </resultMap>
+
+    <cache eviction="FIFO"
+           flushInterval="60000"
+           size="512"
+           readOnly="true"/>
+
+    <select id="getRoleList" resultMap="getRoleListMap">
+      select * from smbms_role
+    </select>
+
+</mapper>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+mybatis的具体的dao对应的配置文件，类似于那个impl
+
+namespace要和我们的dao的接口进行绑定
+-->
+<mapper namespace="cn.smbms.dao.bill.BillMapper">
+
+    <sql id="salAll">
+        billCode,productName,productDesc,productUnit,productCount,totalPrice,isPayment,providerId,createdBy,creationDate
+    </sql>
+
+    <resultMap id="getBillListMap" type="cn.smbms.pojo.Bill">
+        <id property="id" column="id"/>
+        <result property="billCode" column="billCode"/>
+        <result property="productName" column="productName"/>
+        <result property="productDesc" column="productDesc"/>
+        <result property="productUnit" column="productUnit"/>
+        <result property="productCount" column="productCount"/>
+        <result property="totalPrice" column="totalPrice"/>
+        <result property="isPayment" column="isPayment"/>
+        <result property="providerId" column="providerId"/>
+        <result property="providerName" column="providerName"/>
+        <result property="creationDate" column="creationDate"/>
+        <result property="createdBy" column="createdBy"/>
+    </resultMap>
+
+    <cache eviction="FIFO"
+           flushInterval="60000"
+           size="512"
+           readOnly="true"/>
+
+    <insert id="add">
+        insert into smbms_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bill.billCode !=null">
+                billCode,
+            </if>
+            <if test="bill.productName !=null">
+                productName,
+            </if>
+            <if test="bill.productDesc !=null">
+                productDesc,
+            </if>
+            <if test="bill.productUnit !=null">
+                productUnit,
+            </if>
+            <if test="bill.productCount !=null">
+                productCount,
+            </if>
+            <if test="bill.totalPrice !=null">
+                totalPrice,
+            </if>
+            <if test="bill.isPayment !=null">
+                isPayment,
+            </if>
+            <if test="bill.providerId !=null">
+                providerId,
+            </if>
+            <if test="bill.createdBy !=null">
+                createdBy,
+            </if>
+            <if test="bill.creationDate !=null">
+                creationDate,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="bill.billCode !=null">
+               billCode=#{bill.billCode},
+            </if>
+            <if test="bill.productName !=null">
+                productName=#{bill.productName},
+            </if>
+            <if test="bill.productDesc !=null">
+                productDesc=#{bill.productDesc},
+            </if>
+            <if test="bill.productUnit !=null">
+                productUnit=#{bill.productUnit},
+            </if>
+            <if test="bill.productCount !=null">
+                productCount=#{bill.productCount},
+            </if>
+            <if test="bill.totalPrice !=null">
+                totalPrice=#{bill.totalPrice},
+            </if>
+            <if test="bill.isPayment !=null">
+                isPayment=#{bill.isPayment},
+            </if>
+            <if test="bill.providerId !=null">
+                providerId=#{bill.providerId},
+            </if>
+            <if test="bill.createdBy !=null">
+                createdBy=#{bill.createdBy},
+            </if>
+            <if test="bill.creationDate !=null">
+                creationDate=#{bill.creationDate},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getBillList" resultMap="getBillListMap">
+       select b.*,p.proName as providerName from smbms_bill b, smbms_provider p
+        <where>
+                and b.providerId = p.id
+            <if test="bill.productName !=null">
+                and productName like concat('%',#{bill.productName},'%')
+            </if>
+            <if test="bill.providerId gt 0">
+                and providerId = #{bill.providerId}
+            </if>
+            <if test="bill.isPayment gt 0">
+                and isPayment = #{bill.isPayment}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteBillById">
+        delete from smbms_bill
+        <where>
+            and id=#{delId}
+        </where>
+    </delete>
+
+    <resultMap id="getBillByIdMap" type="cn.smbms.pojo.Bill">
+        <id property="id" column="id"/>
+        <result property="billCode" column="billCode"/>
+        <result property="productName" column="productName"/>
+        <result property="productDesc" column="productDesc"/>
+        <result property="productUnit" column="productUnit"/>
+        <result property="productCount" column="productCount"/>
+        <result property="totalPrice" column="totalPrice"/>
+        <result property="isPayment" column="isPayment"/>
+        <result property="providerId" column="providerId"/>
+        <result property="providerName" column="providerName"/>
+        <result property="modifyBy" column="modifyBy"/>
+        <result property="modifyDate" column="modifyDate"/>
+    </resultMap>
+
+    <select id="getBillById" resultMap="getBillByIdMap">
+        select b.*,p.proName as providerName from smbms_bill b, smbms_provider p
+        <where>
+            and b.providerId = p.id
+            and b.id=#{id}·
+        </where>
+    </select>
+
+    <update id="modify">
+        update smbms_bill
+        <set>
+            <if test="bill.billCode !=null">
+                billCode=#{bill.billCode},
+            </if>
+            <if test="bill.productName !=null">
+                productName=#{bill.productName},
+            </if>
+            <if test="bill.productDesc !=null">
+                productDesc=#{bill.productDesc},
+            </if>
+            <if test="bill.productUnit !=null">
+                productUnit=#{bill.productUnit},
+            </if>
+            <if test="bill.productCount !=null">
+                productCount=#{bill.productCount},
+            </if>
+            <if test="bill.totalPrice !=null">
+                totalPrice=#{bill.totalPrice},
+            </if>
+            <if test="bill.isPayment !=null">
+                isPayment=#{bill.isPayment},
+            </if>
+            <if test="bill.providerId !=null">
+                providerId=#{bill.providerId},
+            </if>
+            <if test="bill.createdBy !=null">
+                createdBy=#{bill.createdBy},
+            </if>
+            <if test="bill.creationDate !=null">
+                creationDate=#{bill.creationDate},
+            </if>
+        </set>
+        <where>
+            and id = #{bill.id}
+        </where>
+    </update>
+
+    <select id="getBillCountByProviderId" resultType="int">
+        select count(1) as billCount from smbms_bill
+         <where>
+             and providerId = #{providerId}
+         </where>
+    </select>
+
+</mapper>
