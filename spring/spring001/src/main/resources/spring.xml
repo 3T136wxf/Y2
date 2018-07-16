@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="car" class="com.sz.entity.Car">
+        <property name="name" value="张浩"/>
+        <property name="num" value="1"/>
+        <property name="color" value="蓝色"/>
+        <property name="moot" ref="m3"/>
+    </bean>
+
+    <bean id="m3" class="com.sz.entity.Moot" >
+        <constructor-arg type="java.lang.Integer" value="2" index="0"/>
+        <constructor-arg type="java.lang.String" value="狗子" index="1"/>
+        <constructor-arg type="java.lang.String" value="红色" index="2"/>
+    </bean>
+
+</beans>
