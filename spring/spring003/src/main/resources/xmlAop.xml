@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <aop:aspectj-autoproxy/>
+
+    <bean class="com.sz.service.UserService" id="userService"/>
+    <bean class="com.sz.service.StudentService" id="studentService"/>
+    <bean class="com.sz.aop.LogBefore" id="logBefore"/>
+
+    <aop:config>
+        <aop:aspect ref="logBefore" order="3">
+            <aop:pointcut id="xmlPoint" expression="execution(public void add(..))"/>
+            <aop:before method="beforeMethod2" pointcut-ref="xmlPoint"/>
+        </aop:aspect>
+
+        <aop:aspect ref="logBefore" order="2">
+            <aop:pointcut id="xmlPoint2" expression="execution(public void add(..))"/>
+            <aop:after method="afterMethod2" pointcut-ref="xmlPoint2"/>
+        </aop:aspect>
+
+        <aop:aspect ref="logBefore" order="1">
+            <aop:pointcut id="xmlPoint3" expression="execution(public void login(..))"/>
+            <aop:after-returning method="AfterReturningMethod2" pointcut-ref="xmlPoint3" returning="returning"/>
+        </aop:aspect>
+    </aop:config>
+
+</beans>
