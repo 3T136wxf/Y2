@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--
+        init-method 初始化方法
+
+        scope:
+            springbean的范围（实例创建一种策略），
+            常用值：
+            singleton 单例 含义就是spring管理范围之内的
+            prototype 原型 含义就是 要一个就新创建一个
+        depends-on:
+            依赖于某个bean,那么depends-on后面的bean将优先注册
+        parent：
+            继承前面那个
+    -->
+    <bean class="com.sz.bean.Book" id="book" init-method="init"
+          scope="singleton" destroy-method="destory">
+        <property name="name" value="十万个为什么"/>
+        <property name="price" value="100"/>
+    </bean>
+
+    <bean class="com.sz.bean.Book" id="book2" init-method="init"
+          scope="prototype" destroy-method="destory">
+        <property name="name" value="宇宙大爆炸"/>
+        <property name="price" value="200"/>
+    </bean>
+
+    <bean class="com.sz.bean.Rice" id="rice" depends-on="fire">
+        <property name="name" value="土豆"/>
+    </bean>
+
+    <bean class="com.sz.bean.Fire" id="fire">
+        <property name="name" value="火"/>
+    </bean>
+
+    <bean class="com.sz.bean.Book" id="b5">
+        <property name="name" value="SpringMVC"/>
+    </bean>
+
+    <bean class="com.sz.bean.Book" id="b6" parent="b5">
+        <property name="price" value="20"/>
+    </bean>
+
+</beans>

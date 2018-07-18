@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="com.sz.bean.Girl" id="girl">
+        <property name="fridens">
+            <array>
+                <value>刘德华</value>
+                <value>张学友</value>
+                <value>郭富城</value>
+                <value>王雪峰</value>
+            </array>
+        </property>
+    </bean>
+
+    <bean class="com.sz.bean.Girl" id="nos">
+        <property name="nos">
+            <list>
+                <value>26</value>
+                <value>68</value>
+                <value>922</value>
+                <value>329</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="com.sz.bean.Girl" id="girl2">
+        <property name="books">
+            <set>
+                <bean class="com.sz.bean.Book">
+                    <property name="name" value="医学课外书"></property>
+                    <property name="price" value="120"></property>
+                </bean>
+                <bean class="com.sz.bean.Book">
+                    <property name="name" value="电路"></property>
+                    <property name="price" value="30"></property>
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean class="com.sz.bean.Girl" id="girl3" parent="girl2">
+        <property name="likeRices">
+            <map>
+                <entry key="like01">
+                    <bean class="com.sz.bean.Rice">
+                        <property name="name" value="地瓜"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>
