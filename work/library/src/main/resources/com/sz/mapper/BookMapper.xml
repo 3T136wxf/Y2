@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.mapper.BookMapper">
+    <insert id="addBook">
+        insert into book
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="book.book_name != null">
+                book_name,
+            </if>
+            <if test="book.book_price != null">
+                book_price,
+            </if>
+            <if test="book.book_type != null">
+                book_type,
+            </if>
+            <if test="book.book_restrict != null">
+                book_restrict,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="book.book_name != null">
+                book_name=#{book.book_name},
+            </if>
+            <if test="book.book_price != null">
+                book_price=#{book.book_price},
+            </if>
+            <if test="book.book_type != null">
+                book_type=#{book.book_type},
+            </if>
+            <if test="book.book_restrict != null">
+                book_restrict=#{book.book_restrict},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delBook">
+        delete from book where book_id=#{book_id}
+    </delete>
+
+    <select id="selBook" resultType="com.sz.pojo.Book">
+        select * from book;
+    </select>
+
+    <update id="updBook">
+        update book
+        <if test="book.book_id != null">
+            <set>
+                <if test="book.book_name != null ">
+                    book_name=#{book.book_name},
+                </if>
+                <if test="book.book_price != null ">
+                    book_price=#{book.book_price},
+                </if>
+                <if test="book.book_type != null ">
+                    book_type=#{book.book_type},
+                </if>
+                <if test="book.book_restrict != null ">
+                    book_restrict=#{book.book_restrict},
+                </if>
+            </set>
+            <where>
+                and book_id=#{book.book_id}
+            </where>
+        </if>
+    </update>
+
+</mapper>
